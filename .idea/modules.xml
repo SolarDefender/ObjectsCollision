@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/ObjectCollision/ObjectCollision.iml" filepath="$PROJECT_DIR$/ObjectCollision/ObjectCollision.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/ObjectsCollision.iml" filepath="$PROJECT_DIR$/.idea/ObjectsCollision.iml" />
+    </modules>
+  </component>
+</project>
