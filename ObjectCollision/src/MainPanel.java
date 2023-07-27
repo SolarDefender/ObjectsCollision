@@ -6,16 +6,23 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
 public class MainPanel extends JPanel implements ActionListener {
 
-    private final int PANEL_WIDTH=1020;
+    /////////////////////////////////   Settings
+    private int NUMBER_OF_BUBBLES=1000;
+    private boolean PSYCHO=false;
+
+    private boolean AGARIO=false;
+    ////////////////////////////////
+    private final int PANEL_WIDTH=1920;
     private final int PANEL_Height=1000;
     private final Timer timer;
     private List<Oval> bubbles;
-    private int NUMBER_OF_BUBBLES=20;
+
     public MainPanel() {
         this.setPreferredSize(new Dimension(PANEL_WIDTH,PANEL_Height));
         this.setBackground(Color.BLACK);
@@ -42,8 +49,8 @@ public class MainPanel extends JPanel implements ActionListener {
 
             renderXCoord+=100;
 
-            int xVel=rand.nextInt(5)+1;
-            int yVel=rand.nextInt(5)+1;
+            int xVel=rand.nextInt(2)+1;
+            int yVel=rand.nextInt(2)+1;
 
             int xDirection=rand.nextInt(2)==0?-1:1;
             int yDirection=rand.nextInt(2)==0?-1:1;
@@ -61,47 +68,62 @@ public class MainPanel extends JPanel implements ActionListener {
         Graphics2D g2D=(Graphics2D) g;
         for (Oval o : bubbles) {
             g2D.setPaint(o.getColor());
+
+            if (PSYCHO) {
+                g2D.setPaint(randomColor());
+                this.setBackground(randomColor());
+            }
+
             g2D.fillOval(o.getX(),o.getY(),o.getWidth(),o.getWidth());
         }
+
     }
 
     public Color randomColor()
     {
 
         Random randomGenerator = new Random();
-        int red = randomGenerator.nextInt(256);
-        int green = randomGenerator.nextInt(256);
-        int blue = randomGenerator.nextInt(256);
+        int red = randomGenerator.nextInt(236)+20;
+        int green = randomGenerator.nextInt(236)+20;
+        int blue = randomGenerator.nextInt(236)+20;
         return new Color(red,green,blue);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        for (Shape s : bubbles){
-              for (Shape s2:
-                   bubbles) {
-                  if (s!=s2){
-                      if(s.intersects(s2)){
-                          int tempX=s.getxVelocity();
-                          int tempY=s.getyVelocity();
+        for (int i = 0; i < bubbles.size(); i++) {
+            Shape s = bubbles.get(i);
+            for (int j = 0; j < bubbles.size(); j++) {
+                Shape s2 = bubbles.get(j);
+                if (s != s2) {
+                    if(s.intersects(s2)&& !AGARIO){
+                                  int tempX=s.getxVelocity();
+                                  int tempY=s.getyVelocity();
 
-                          s.setxVelocity(s2.getxVelocity());
-                          s.setyVelocity(s2.getyVelocity());
+                                  s.setxVelocity(s2.getxVelocity());
+                                  s.setyVelocity(s2.getyVelocity());
 
-                          s2.setxVelocity(tempX);
-                          s2.setyVelocity(tempY);
-                          s.move();
-                          s2.move();
-                      }
-                  }
-              }
-            if (s.getX()>=PANEL_WIDTH-s.getWidth()||s.getX()<=0)
+                                  s2.setxVelocity(tempX);
+                                  s2.setyVelocity(tempY);
+                                  s.move();
+                                  s2.move();
+                              }
+                    if (s.intersects(s2) && s.getHeight()> s2.getHeight() - 50 && s.getDistance(s2)<30 && AGARIO) {
+                        s.setWidth(s.getWidth() + s2.getWidth() / 4);
+                        s.setHeight(s.getHeight() + s2.getHeight() / 4);
+                        bubbles.remove(j); // Удаляем элемент из списка по индексу j
+                        break;
+                    }
+                }
+            }
+            if (s.getX() >= PANEL_WIDTH - s.getWidth() || s.getX() <= 0)
                 s.reverseVelocity(true);
-            else if(s.getY()>=PANEL_Height-s.getHeight()||s.getY()<=0)
+            else if (s.getY() >= PANEL_Height - s.getHeight() || s.getY() <= 0)
                 s.reverseVelocity(false);
             s.move();
         }
         repaint();
     }
+
 
 }

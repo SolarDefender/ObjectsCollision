@@ -21,9 +21,13 @@ public class Oval extends Shape{
     }
 
     @Override
-    public boolean intersects(Shape s) {
-        double dist=Math.sqrt( Math.pow((s.x+s.getWidth()/2)-(this.x+this.radius),2)+Math.pow((s.y+s.getWidth()/2)-(this.y+this.radius),2));
-        if (dist<=s.width/2+radius)
+    public double getDistance(Shape shape) {
+        return Math.sqrt( Math.pow((shape.x+shape.getWidth()/2)-(this.x+this.radius),2)+Math.pow((shape.y+shape.getWidth()/2)-(this.y+this.radius),2));
+    }
+
+    @Override
+    public boolean intersects(Shape shape) {
+        if (this.getDistance(shape)<=shape.width/2+this.radius)
             return true;
         return false;
     }
